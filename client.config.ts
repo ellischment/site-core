@@ -14,13 +14,22 @@ export default defineClientConfig({
   },
   contacts: {
     email: "hello@example.invalid",
+    phone: "+7 900 000-00-00",
+    telegram: "example_site",
+    locations: [
+      { id: "main", title: "Основная точка", address: "ул. Примерная, 1" },
+      { id: "online", title: "Онлайн", online: true },
+    ],
   },
   domains: {
     primary: "example.invalid",
   },
   timezone: "Europe/Moscow",
+  // В шаблоне включены все модули: так их проверяют сквозные тесты.
+  // npm run new-client оставляет только нужные клиенту.
   modules: {
     requests: {},
+    booking: {},
   },
   nav: [],
   seo: {

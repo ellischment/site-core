@@ -9,7 +9,8 @@ import { MAX_ATTEMPTS, retryDelayMs } from "@/lib/retry";
 import { isTelegramConfigured, sendTelegram } from "@/lib/telegram";
 import { config } from "@/lib/config";
 import { buildNotifyText } from "./notify";
-import { maskContact, type RequestInput } from "./validation";
+import { maskContact } from "@/lib/contact";
+import type { RequestInput } from "./validation";
 
 /** Повторная отправка той же заявки (двойной клик, «назад») в течение этого окна: дубль. */
 export const DEDUP_MINUTES = 10;

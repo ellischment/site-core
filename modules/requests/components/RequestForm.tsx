@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useRef, useState, type FormEvent } from "react";
 import { Button } from "@/components/Button";
 import type { RequestChannel } from "@/lib/config-schema";
-import { CHANNEL_LABELS, CONTACT_LABELS } from "../lib/validation";
+import { CHANNEL_LABELS, CONTACT_LABELS } from "@/lib/contact";
 import styles from "./RequestForm.module.css";
 
 type Fields = "name" | "contact" | "comment" | "consent" | "form";

@@ -1,0 +1,41 @@
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.card {
+  padding: var(--space-4);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  background: var(--c-surface);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: baseline;
+}
+
+.hours {
+  display: grid;
+  grid-template-columns: minmax(40px, auto) repeat(3, auto);
+  gap: var(--space-2) var(--space-3);
+  align-items: center;
+}
+
+.services {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.details summary {
+  cursor: pointer;
+  padding: var(--space-2) 0;
+  font-weight: 600;
+}

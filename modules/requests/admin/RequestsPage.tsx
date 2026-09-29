@@ -8,7 +8,7 @@ import { prisma } from "@/lib/db";
 import { isTelegramConfigured } from "@/lib/telegram";
 import { TZ } from "@/lib/time";
 import { kindTitle } from "../lib/notify";
-import { CHANNEL_LABELS } from "../lib/validation";
+import { CHANNEL_LABELS } from "@/lib/contact";
 import { deleteRequest, sendTestNotification, setRequestStatus } from "./actions";
 import { NOTIFY_TITLES, REQUEST_STATUSES, STATUS_TITLES, type RequestStatus } from "./statuses";
 import page from "./requests.module.css";

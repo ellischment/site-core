@@ -79,7 +79,18 @@ export const clientConfigSchema = z.object({
             .default([{ id: "contact", title: "Сообщение" }]),
         })
         .optional(),
-      booking: z.object({ slotMinutes: z.number().int().min(5).default(30) }).optional(),
+      booking: z
+        .object({
+          /** Шаг сетки времени в минутах. */
+          slotMinutes: z.number().int().min(5).max(240).default(30),
+          /** На сколько дней вперёд открыта запись. */
+          horizonDays: z.number().int().min(1).max(365).default(30),
+          /** Не раньше чем за столько минут до начала. */
+          leadMinutes: z.number().int().min(0).default(120),
+          /** Сколько дней хранить запись с контактами после её даты. */
+          keepDays: z.number().int().min(7).max(1095).default(180),
+        })
+        .optional(),
       catalog: z.object({ mode: z.enum(["services", "products"]).default("services") }).optional(),
       blog: z.object({ perPage: z.number().int().min(1).default(9) }).optional(),
       reviews: z.object({}).optional(),
@@ -119,6 +130,17 @@ export const clientConfigSchema = z.object({
     .default({ consentVersion: "2026-01-01" }),
 });
 
+/** Проверки между разделами конфига: то, что схема полей не видит. */
+export const clientConfigChecked = clientConfigSchema.superRefine((c, ctx) => {
+  if (c.modules.booking && c.contacts.locations.length === 0) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["contacts", "locations"],
+      message: "Модулю booking нужна хотя бы одна точка (адрес или онлайн)",
+    });
+  }
+});
+
 export type ClientConfigInput = z.input<typeof clientConfigSchema>;
 export type ClientConfig = z.output<typeof clientConfigSchema>;
 
@@ -128,7 +150,7 @@ export function defineClientConfig(config: ClientConfigInput): ClientConfigInput
 }
 
 export function parseClientConfig(raw: unknown): ClientConfig {
-  const parsed = clientConfigSchema.safeParse(raw);
+  const parsed = clientConfigChecked.safeParse(raw);
   if (!parsed.success) {
     const list = parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("\n");
     throw new Error(`Ошибка в client.config.ts:\n${list}`);

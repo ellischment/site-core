@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { maskContact, normalizeContact, requestSchema } from "./validation";
+import { maskContact, normalizeContact } from "./contact";
+import { requestSchema } from "@/modules/requests/lib/validation";
 
 const base = { kind: "contact", name: "Мария", channel: "call" as const, contact: "8 (916) 123-45-67", consent: true as const };
 

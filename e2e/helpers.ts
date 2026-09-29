@@ -18,3 +18,5 @@ export async function login(page: Page, who = OWNER, ip = "10.10.0.1"): Promise<
   await page.waitForURL((url) => !url.pathname.includes("/admin/login"));
   await expect(page.getByRole("navigation", { name: "Разделы админки" })).toBeVisible();
 }
+
+export { isModuleEnabled } from "../lib/config";

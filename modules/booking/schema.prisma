@@ -1,0 +1,79 @@
+// Модуль booking: запись на услуги по точкам (адрес или онлайн).
+// Точки описаны в client.config.ts (contacts.locations), здесь только их id.
+//
+// Персональные данные (docs/personal-data.md):
+// - Booking.nameEnc, contactEnc: связаться по записи; keepDays после даты записи
+//   (по умолчанию 180), потом запись удаляется (modules/booking/lib/prune.ts).
+// - Booking.ip: ограничение частоты; 60 минут.
+
+model BookingService {
+  id          String  @id @default(cuid())
+  title       String
+  slug        String  @unique
+  description String  @default("")
+  durationMin Int
+  priceText   String  @default("") // «2 500 ₽», «от 3 000 ₽»: текстом, формулировки меняются
+  locationIds String  @default("[]") // JSON: id точек; пусто = во всех
+  visible     Boolean @default(true)
+  sort        Int     @default(0)
+
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([visible, sort])
+}
+
+model WorkingHours {
+  id         String  @id @default(cuid())
+  locationId String
+  weekday    Int // 1 понедельник .. 7 воскресенье
+  opensAt    String // «10:00»
+  closesAt   String // «20:00»
+  dayOff     Boolean @default(false)
+
+  @@unique([locationId, weekday])
+}
+
+model DayOff {
+  id         String  @id @default(cuid())
+  date       String // «2026-10-05», дата в зоне клиента
+  locationId String? // пусто: выходной во всех точках
+  note       String  @default("")
+
+  @@index([date])
+}
+
+model Booking {
+  id         String         @id @default(cuid())
+  serviceId  String
+  service    BookingService @relation(fields: [serviceId], references: [id])
+  locationId String
+  startsAt   DateTime
+  endsAt     DateTime
+
+  nameEnc     String
+  contactEnc  String
+  contactMask String
+  contactHash String
+  channel     String
+  comment     String?
+
+  consentVersion String
+  consentAt      DateTime
+  ip             String?
+
+  status String @default("new") // new | confirmed | done | cancelled
+
+  notifyStatus String    @default("pending") // pending | sent | failed | off
+  attempts     Int       @default(0)
+  lastError    String?
+  nextTryAt    DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([locationId, startsAt])
+  @@index([ip, createdAt])
+  @@index([notifyStatus, nextTryAt])
+}
