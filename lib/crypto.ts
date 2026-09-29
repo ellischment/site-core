@@ -3,7 +3,7 @@
 // AES-256-GCM: аутентифицированное шифрование, ключ выводится из ENCRYPTION_KEY.
 // Расшифровка только в панели и в выгрузке, обе операции пишутся в журнал действий.
 
-import { createCipheriv, createDecipheriv, createHash, randomBytes } from "node:crypto";
+import { createCipheriv, createDecipheriv, createHash, createHmac, randomBytes } from "node:crypto";
 
 /** 32 байта ключа из переменной окружения любой длины. В коде ключа нет. */
 function key(): Buffer {
@@ -27,4 +27,12 @@ export function decrypt(payload: string): string {
   const decipher = createDecipheriv("aes-256-gcm", key(), Buffer.from(ivB, "base64"));
   decipher.setAuthTag(Buffer.from(tagB, "base64"));
   return Buffer.concat([decipher.update(Buffer.from(dataB, "base64")), decipher.final()]).toString("utf8");
+}
+
+/**
+ * Отпечаток значения для поиска дублей без расшифровки: HMAC на ключе
+ * шифрования. Без ключа по отпечатку не подобрать телефон перебором.
+ */
+export function fingerprint(value: string): string {
+  return createHmac("sha256", key()).update(value).digest("hex");
 }

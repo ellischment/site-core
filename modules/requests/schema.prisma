@@ -1,0 +1,40 @@
+// Модуль requests: заявки с сайта.
+//
+// Персональные данные (docs/personal-data.md):
+// - nameEnc, contactEnc: зачем связаться с гостем; сколько config.modules.requests.keepDays
+//   (по умолчанию 180 дней), потом заявка удаляется целиком (modules/requests/lib/prune.ts).
+// - contactHash: защита от дублей; живёт вместе с заявкой. По хэшу контакт не восстановить.
+// - ip: ограничение частоты; 60 минут, потом обнуляется.
+// - comment: гость может написать что угодно, поэтому живёт столько же, сколько заявка.
+
+model Request {
+  id       String  @id @default(cuid())
+  kind     String // вид обращения из config.modules.requests.kinds
+  subject  String? // о чём: услуга, товар, проект
+
+  nameEnc     String // зашифровано
+  contactEnc  String // зашифровано: телефон, ник Telegram или почта
+  contactMask String // «+7 916 ХХХ 41-77», для списков
+  contactHash String // для защиты от дублей
+  channel     String // call | telegram | whatsapp | max | sms | email
+  comment     String?
+
+  consentVersion String
+  consentAt      DateTime
+  ip             String?
+  source         String? // адрес страницы, с которой отправлена форма
+
+  status String @default("new") // new | work | done | spam
+
+  notifyStatus String    @default("pending") // pending | sent | failed | off
+  attempts     Int       @default(0)
+  lastError    String?
+  nextTryAt    DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([contactHash, kind, createdAt])
+  @@index([ip, createdAt])
+  @@index([notifyStatus, nextTryAt])
+  @@index([createdAt])
+}

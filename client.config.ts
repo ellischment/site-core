@@ -19,7 +19,9 @@ export default defineClientConfig({
     primary: "example.invalid",
   },
   timezone: "Europe/Moscow",
-  modules: {},
+  modules: {
+    requests: {},
+  },
   nav: [],
   seo: {
     defaultTitle: "Новый сайт",

@@ -3,9 +3,10 @@
 
 import { config } from "@/lib/config";
 import type { ModuleId } from "@/lib/config-schema";
+import { requestsModule } from "./requests/module";
 import type { ModuleDefinition } from "./types";
 
-export const ALL_MODULES: readonly ModuleDefinition[] = [];
+export const ALL_MODULES: readonly ModuleDefinition[] = [requestsModule];
 
 export function isEnabled(id: ModuleId): boolean {
   return config.modules[id] !== undefined;

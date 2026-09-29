@@ -4,6 +4,9 @@
 
 import { z } from "zod";
 
+export const REQUEST_CHANNELS = ["call", "telegram", "whatsapp", "max", "sms", "email"] as const;
+export type RequestChannel = (typeof REQUEST_CHANNELS)[number];
+
 export const MODULE_IDS = ["requests", "booking", "catalog", "blog", "reviews", "gallery"] as const;
 export type ModuleId = (typeof MODULE_IDS)[number];
 
@@ -65,10 +68,15 @@ export const clientConfigSchema = z.object({
     .object({
       requests: z
         .object({
-          /** Каналы связи в форме. */
-          channels: z.array(z.enum(["call", "telegram", "whatsapp", "max", "sms", "email"])).default(["call", "telegram"]),
-          /** Заголовок формы по умолчанию (текст правится в админке). */
-          title: z.string().default("Оставить заявку"),
+          /** Каналы связи в форме. Первый канал выбран по умолчанию. */
+          channels: z.array(z.enum(REQUEST_CHANNELS)).min(1).default(["call", "telegram"]),
+          /** Сколько дней хранить заявку с контактами (152-ФЗ: не дольше цели). */
+          keepDays: z.number().int().min(7).max(1095).default(180),
+          /** Виды обращений: форма шлёт один из них. */
+          kinds: z
+            .array(z.object({ id: z.string().regex(/^[a-z0-9-]+$/), title: z.string().min(1) }))
+            .min(1)
+            .default([{ id: "contact", title: "Сообщение" }]),
         })
         .optional(),
       booking: z.object({ slotMinutes: z.number().int().min(5).default(30) }).optional(),
