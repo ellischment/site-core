@@ -17,6 +17,7 @@ export async function MediaManager({ entity, entityId, shape = CARD_COVER }: { e
             <li key={m.id} className={styles.mediaItem}>
               {/* eslint-disable-next-line @next/next/no-img-element -- превью в админке, оптимизация не нужна */}
               <img src={m.path ?? ""} alt={m.alt ?? ""} width={160} height={120} className={styles.mediaThumb} loading="lazy" />
+              <code className={styles.hint}>{m.path?.replace(/-1600\.webp$|-800\.webp$/, "-800.webp")}</code>
               <ActionForm action={setMediaAltAction} submitLabel="Сохранить описание" variant="ghost">
                 <input type="hidden" name="id" value={m.id} />
                 <input className={styles.input} name="alt" defaultValue={m.alt ?? ""} placeholder="Что на фото" aria-label="Описание фото" />

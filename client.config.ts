@@ -31,6 +31,7 @@ export default defineClientConfig({
     requests: {},
     booking: {},
     catalog: {},
+    blog: {},
   },
   nav: [],
   seo: {

@@ -1,0 +1,22 @@
+// Копия modules/blog/schema.prisma. Править источник, затем npm run db:schemas.
+
+// Модуль blog: статьи с markdown и обложкой (core Media, entity = "article").
+// Персональных данных нет.
+
+model Article {
+  id           String    @id @default(cuid())
+  title        String
+  slug         String    @unique
+  excerpt      String    @default("")
+  bodyMarkdown String    @default("")
+  status       String    @default("draft") // draft | published
+  publishedAt  DateTime?
+
+  seoTitle       String?
+  seoDescription String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, publishedAt])
+}
