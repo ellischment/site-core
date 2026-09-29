@@ -1,0 +1,22 @@
+.main {
+  min-height: 70vh;
+  display: grid;
+  place-content: center;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+}
+
+.code {
+  margin: 0;
+  color: var(--c-text-muted);
+  font-family: var(--font-ui);
+  letter-spacing: 0.2em;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}

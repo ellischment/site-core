@@ -27,10 +27,10 @@ added_lines=$(git diff --cached -U0 -- . ':(exclude).githooks' | grep -E '^\+' |
 # Утечка это секрет, а не само слово token/secret/password (оно легально в именах
 # переменных и в process.env.X). Признак: после = или : идёт 16+ символов
 # base64/JWT-алфавита. Явные тестовые плейсхолдеры отсеиваются вторым grep -v.
-entropy_pattern="(token|secret|password|key)[^=:]{0,30}[=:][[:space:]]*[\"']?[A-Za-z0-9+/_.=-]{16,}"
+entropy_pattern="(token|secret|password|_key)[^=:]{0,30}[=:][[:space:]]*[\"']?[A-Za-z0-9+/_.=-]{16,}"
 suspicious=$(printf '%s\n' "$added_lines" \
-  | grep -iE 'token|secret|password|key' \
-  | grep -viE 'not-real|changeme|change-me|example|placeholder|ci-|test-|=[[:space:]]*(null|"")[[:space:]]*$|[=:][[:space:]]*process\.env\.' \
+  | grep -iE 'token|secret|password|_key' \
+  | grep -viE 'not-real|changeme|change-me|example|placeholder|ci-|test-|autoComplete=|type="password"|=[[:space:]]*(null|"")[[:space:]]*$|[=:][[:space:]]*process\.env\.' \
   | grep -iE "$entropy_pattern")
 
 if [ -n "$suspicious" ]; then

@@ -1,0 +1,103 @@
+// Ядро основы. Модули кладут свои модели в соседние файлы prisma/schema/<модуль>.prisma.
+// SQLite через Prisma не поддерживает перечисления и массивы: статусы хранятся
+// строкой, допустимые значения в lib/constants.ts, списки строкой в формате JSON.
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- Доступ ----------
+
+model User {
+  id           String  @id @default(cuid())
+  email        String  @unique
+  passwordHash String
+  role         String // owner | admin | tech
+  active       Boolean @default(true)
+
+  sessions Session[]
+  logs     AuditLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+// ПДн: IP. Зачем: блокировка подбора пароля и журнал входов в «Системе».
+// Сколько: 30 дней (lib/privacy-prune.ts, LOGIN_ATTEMPT_KEEP_DAYS).
+model LoginAttempt {
+  id        String   @id @default(cuid())
+  ip        String
+  success   Boolean
+  createdAt DateTime @default(now())
+
+  @@index([ip, createdAt])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String
+  entity    String
+  entityId  String?
+  payload   String? // JSON, секретные поля скрыты (lib/audit.ts)
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+// ---------- Тексты и настройки ----------
+
+model SiteText {
+  key       String   @id
+  value     String // JSON
+  updatedAt DateTime @updatedAt
+}
+
+// ---------- Медиа ----------
+
+// Связь с модулями через entity + entityId без внешних ключей: ядро не зависит
+// от схемы модулей (docs/core-map.md, раздел 7).
+model Media {
+  id       String  @id @default(cuid())
+  kind     String // image | video
+  path     String? // для изображений: /uploads/ГГГГ/ММ/<uuid>-<ширина>.webp
+  url      String? // для видео: ссылка на площадку
+  alt      String?
+  width    Int?
+  height   Int?
+  bytes    Int?
+  entity   String?
+  entityId String?
+  sort     Int     @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@index([entity, entityId, sort])
+}
+
+// ---------- Редиректы ----------
+
+model Redirect {
+  id        String   @id @default(cuid())
+  from      String   @unique // «/old-path», без домена
+  to        String // «/new-path» или полный адрес
+  permanent Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
