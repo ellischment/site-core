@@ -6,11 +6,12 @@ import type { ModuleId } from "@/lib/config-schema";
 import { blogModule } from "./blog/module";
 import { bookingModule } from "./booking/module";
 import { catalogModule } from "./catalog/module";
+import { galleryModule } from "./gallery/module";
 import { requestsModule } from "./requests/module";
 import { reviewsModule } from "./reviews/module";
 import type { ModuleDefinition } from "./types";
 
-export const ALL_MODULES: readonly ModuleDefinition[] = [requestsModule, bookingModule, catalogModule, blogModule, reviewsModule];
+export const ALL_MODULES: readonly ModuleDefinition[] = [requestsModule, bookingModule, catalogModule, blogModule, reviewsModule, galleryModule];
 
 export function isEnabled(id: ModuleId): boolean {
   return config.modules[id] !== undefined;

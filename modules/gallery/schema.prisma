@@ -1,0 +1,16 @@
+// Модуль gallery: работы и фото. Фото: core Media с entity = "galleryItem".
+// Персональных данных нет.
+
+model GalleryItem {
+  id          String  @id @default(cuid())
+  title       String
+  description String  @default("")
+  tag         String  @default("") // подпись группы: «Керамика», «Портреты»
+  visible     Boolean @default(true)
+  sort        Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([visible, sort])
+}

@@ -33,6 +33,7 @@ export default defineClientConfig({
     catalog: {},
     blog: {},
     reviews: {},
+    gallery: {},
   },
   nav: [],
   seo: {

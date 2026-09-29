@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { ActionError, panelAction } from "@/lib/action";
+import { requireUser } from "@/lib/auth";
 import { revalidateEntity } from "@/lib/cache";
 import { ALL_ROLES } from "@/lib/constants";
 import { formToObject, toFormState, type FormState } from "@/lib/form-state";
@@ -59,6 +60,16 @@ const move = panelAction({
 function revalidateOwner(entity: string | null) {
   const cacheEntity = entity ? mediaCacheEntity(entity) : undefined;
   if (cacheEntity) revalidateEntity(cacheEntity);
+}
+
+/**
+ * Сброс кэша после загрузки фото. Загрузка идёт через Route Handler, а там Next 16
+ * умеет только «мягкий» сброс: первый гость после загрузки видел старую страницу.
+ * Серверное действие сбрасывает тег сразу (updateTag), форма зовёт его после загрузки.
+ */
+export async function refreshAfterUpload(entity: string): Promise<void> {
+  await requireUser(ALL_ROLES);
+  revalidateOwner(entity);
 }
 
 export async function deleteMediaAction(_prev: FormState, fd: FormData): Promise<FormState> {

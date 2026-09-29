@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { coverNotice, type CoverShape } from "@/lib/cover-notice";
 import styles from "./admin.module.css";
+import { refreshAfterUpload } from "./media-actions";
 
 /**
  * Загрузка фото к сущности. Несколько файлов за раз, по одному запросу на файл:
@@ -46,6 +47,7 @@ export function MediaUpload({ entity, entityId, shape }: { entity: string; entit
         out.push(`${file.name}: ${data.error ?? "не загрузилось"}`);
       }
     }
+    await refreshAfterUpload(entity).catch(() => undefined);
     setMessages(out);
     setBusy(false);
     router.refresh();
