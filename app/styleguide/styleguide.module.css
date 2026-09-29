@@ -1,0 +1,46 @@
+.main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4);
+}
+
+.fonts {
+  margin: var(--space-5) 0;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(520px, 100%), 1fr));
+  gap: var(--space-4);
+}
+
+.scheme {
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.sample {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.muted {
+  color: var(--c-text-muted);
+}
+
+.accent {
+  font-family: var(--font-accent);
+  font-style: var(--font-accent-style);
+  font-size: var(--fs-h3);
+  font-weight: var(--font-accent-weight);
+}

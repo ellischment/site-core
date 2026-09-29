@@ -19,6 +19,7 @@ export type AdminSection = {
 
 export const CORE_SECTIONS: readonly AdminSection[] = [
   { slug: "", title: "Обзор", roles: ALL_ROLES, order: 0 },
+  { slug: "appearance", title: "Внешний вид", roles: ALL_ROLES, order: 85 },
   { slug: "settings", title: "Доступы", roles: OWNER_ROLES, order: 90 },
   { slug: "audit", title: "Журнал действий", roles: OWNER_ROLES, order: 91 },
   { slug: "system", title: "Система", roles: OWNER_ROLES, order: 92 },

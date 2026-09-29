@@ -46,8 +46,8 @@ const tokens: ThemeTokens = {
   fonts: {
     display: { family: "", fallback: "Georgia, serif" },
     accent: { family: "", fallback: "Georgia, serif", italic: true },
-    body: { family: "", fallback: "system-ui, -apple-system, 'Segoe UI', sans-serif" },
-    ui: { family: "", fallback: "system-ui, -apple-system, 'Segoe UI', sans-serif" },
+    body: { family: "manrope", fallback: "system-ui, -apple-system, 'Segoe UI', sans-serif" },
+    ui: { family: "manrope", fallback: "system-ui, -apple-system, 'Segoe UI', sans-serif", weight: 600 },
   },
 };
 

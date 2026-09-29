@@ -8,6 +8,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import styles from "@/components/admin/admin.module.css";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 type Item = { href: string; title: string };
 
@@ -74,6 +75,10 @@ export function PanelNav({
         <Link href="/admin/password" className={styles.selfLink} onClick={() => setOpen(false)}>
           Сменить пароль
         </Link>
+
+        <div className={styles.selfLink}>
+          <ThemeToggle />
+        </div>
 
         <form action={logout}>
           <button type="submit" className={styles.logoutButton}>
