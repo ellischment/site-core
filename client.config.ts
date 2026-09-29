@@ -32,6 +32,7 @@ export default defineClientConfig({
     booking: {},
     catalog: {},
     blog: {},
+    reviews: {},
   },
   nav: [],
   seo: {

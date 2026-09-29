@@ -1,0 +1,27 @@
+// Модуль reviews: отзывы с модерацией. Гость оставляет отзыв формой на сайте,
+// на сайте он появляется только после одобрения в админке.
+//
+// Персональные данные (docs/personal-data.md):
+// - authorName: подпись под отзывом, публикуется с согласия автора (consentAt);
+//   живёт, пока отзыв на сайте. Отклонённые удаляются через 30 дней.
+// - ip: ограничение частоты; 60 минут.
+
+model Review {
+  id         String    @id @default(cuid())
+  authorName String
+  text       String
+  rating     Int? // 1..5, необязательно
+  videoUrl   String? // ссылка на VK Видео, Rutube, YouTube; видео на сервере не храним
+  source     String    @default("site") // site | admin
+  status     String    @default("pending") // pending | published | rejected
+  consentAt  DateTime? // согласие автора на публикацию имени и текста
+  ip         String?
+  sort       Int       @default(0)
+
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([status, sort])
+  @@index([ip, createdAt])
+}
