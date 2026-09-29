@@ -1,0 +1,61 @@
+#!/bin/sh
+# Проверки перед коммитом. Всё на конвейерах grep, без построчных циклов:
+# на Windows Git Bash порождение процесса на строку делает хук минутным.
+#
+# Включить у себя: git config core.hooksPath .githooks
+
+staged_files=$(git diff --cached --name-only --diff-filter=ACM)
+
+# --- 1. Файлы, которым не место в git: жёсткий стоп ---
+
+if printf '%s\n' "$staged_files" | grep -qE '(^|/)\.env(\.local)?$'; then
+  echo "Коммит отклонён: .env в индексе. Секреты не попадают в git." >&2
+  exit 1
+fi
+
+if printf '%s\n' "$staged_files" | grep -qE '^legacy/|SECRETS\.local\.txt|\.db$'; then
+  echo "Коммит отклонён: данные владельца (legacy/, базы, SECRETS) не коммитятся." >&2
+  exit 1
+fi
+
+# --- 2. Секреты в добавленных строках ---
+
+# Только добавленные строки, .githooks исключён: иначе файл бьёт сам себя
+# словами из своих же комментариев.
+added_lines=$(git diff --cached -U0 -- . ':(exclude).githooks' | grep -E '^\+' | grep -vE '^\+\+\+')
+
+# Утечка это секрет, а не само слово token/secret/password (оно легально в именах
+# переменных и в process.env.X). Признак: после = или : идёт 16+ символов
+# base64/JWT-алфавита. Явные тестовые плейсхолдеры отсеиваются вторым grep -v.
+entropy_pattern="(token|secret|password|key)[^=:]{0,30}[=:][[:space:]]*[\"']?[A-Za-z0-9+/_.=-]{16,}"
+suspicious=$(printf '%s\n' "$added_lines" \
+  | grep -iE 'token|secret|password|key' \
+  | grep -viE 'not-real|changeme|change-me|example|placeholder|ci-|test-|=[[:space:]]*(null|"")[[:space:]]*$|[=:][[:space:]]*process\.env\.' \
+  | grep -iE "$entropy_pattern")
+
+if [ -n "$suspicious" ]; then
+  echo "Коммит отклонён: похоже на настоящий секрет в добавленных строках:" >&2
+  printf '%s\n' "$suspicious" >&2
+  echo "Если это ложное срабатывание (тестовый плейсхолдер), добавьте в значение метку not-real." >&2
+  exit 1
+fi
+
+# --- 3. Переводы строк: CRLF в скриптах ломает сервер ---
+
+crlf=$(printf '%s\n' "$staged_files" | grep -E '\.(sh|ts|tsx|js|mjs|json|md|css|yml|yaml|prisma)$|Dockerfile|Caddyfile' \
+  | while IFS= read -r f; do [ -f "$f" ] && grep -l "$(printf '\r')" "$f"; done)
+if [ -n "$crlf" ]; then
+  echo "Коммит отклонён: CRLF в файлах (нужен LF):" >&2
+  printf '%s\n' "$crlf" >&2
+  exit 1
+fi
+
+# --- 4. STATE.md: мягкое предупреждение ---
+
+if printf '%s\n' "$staged_files" | grep -qE '^(lib|app|components|prisma|modules)/'; then
+  if ! printf '%s\n' "$staged_files" | grep -qx 'STATE.md'; then
+    echo "Предупреждение: меняется код, а STATE.md не в этом коммите." >&2
+  fi
+fi
+
+exit 0

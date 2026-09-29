@@ -1,0 +1,12 @@
+# LF везде с первого коммита: скрипты исполняются на Linux-сервере, CRLF ломает
+# запуск («bad interpreter»), а смешанные переводы строк мешают точечным правкам.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.xlsx binary
+*.db binary
