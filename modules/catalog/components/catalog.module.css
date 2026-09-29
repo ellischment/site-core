@@ -1,0 +1,126 @@
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+  gap: var(--space-4);
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  background: var(--c-surface);
+  transition: border-color 0.15s;
+}
+
+.card:hover,
+.card:focus-within {
+  border-color: var(--c-accent);
+}
+
+.cover {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--c-surface-2);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--fs-lg);
+}
+
+/* Вся карточка кликабельна, но ссылка одна: так её читает экранный диктор. */
+.link {
+  color: var(--c-text);
+  text-decoration: none;
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.short {
+  margin: 0;
+  color: var(--c-text-muted);
+}
+
+.meta {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-weight: 600;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-5);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-pill);
+  color: var(--c-text);
+  text-decoration: none;
+  font-family: var(--font-ui);
+  font-size: var(--fs-sm);
+}
+
+.group {
+  margin: 0 0 var(--space-7);
+  scroll-margin-top: var(--space-6);
+}
+
+.item {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.photos {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.photos img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+}
+
+.price {
+  font-family: var(--font-ui);
+  font-size: var(--fs-xl);
+  font-weight: 600;
+}
+
+.prose :where(ul, ol) {
+  padding-left: var(--space-5);
+}
+
+@media (max-width: 800px) {
+  .item {
+    grid-template-columns: 1fr;
+  }
+}

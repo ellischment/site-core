@@ -1,0 +1,43 @@
+// Копия modules/catalog/schema.prisma. Править источник, затем npm run db:schemas.
+
+// Модуль catalog: услуги или товары с ценами, категориями и фото.
+// Режим (услуги или товары) задаётся настройкой в client.config.ts.
+// Фото: core Media с entity = "catalogItem". Персональных данных нет.
+
+model CatalogCategory {
+  id          String  @id @default(cuid())
+  title       String
+  slug        String  @unique
+  description String  @default("")
+  visible     Boolean @default(true)
+  sort        Int     @default(0)
+
+  items CatalogItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CatalogItem {
+  id          String           @id @default(cuid())
+  categoryId  String?
+  category    CatalogCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  title       String
+  slug        String           @unique
+  short       String           @default("") // одна строка для карточки
+  description String           @default("") // markdown
+  priceText   String           @default("") // «от 2 500 ₽»
+  priceFrom   Int? // число для разметки schema.org и сортировки, рубли
+  duration    String           @default("") // для услуг: «60 минут»
+  visible     Boolean          @default(true)
+  sort        Int              @default(0)
+
+  seoTitle       String?
+  seoDescription String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([visible, sort])
+  @@index([categoryId, visible, sort])
+}

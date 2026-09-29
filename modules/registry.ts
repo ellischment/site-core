@@ -4,10 +4,11 @@
 import { config } from "@/lib/config";
 import type { ModuleId } from "@/lib/config-schema";
 import { bookingModule } from "./booking/module";
+import { catalogModule } from "./catalog/module";
 import { requestsModule } from "./requests/module";
 import type { ModuleDefinition } from "./types";
 
-export const ALL_MODULES: readonly ModuleDefinition[] = [requestsModule, bookingModule];
+export const ALL_MODULES: readonly ModuleDefinition[] = [requestsModule, bookingModule, catalogModule];
 
 export function isEnabled(id: ModuleId): boolean {
   return config.modules[id] !== undefined;

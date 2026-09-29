@@ -91,7 +91,13 @@ export const clientConfigSchema = z.object({
           keepDays: z.number().int().min(7).max(1095).default(180),
         })
         .optional(),
-      catalog: z.object({ mode: z.enum(["services", "products"]).default("services") }).optional(),
+      catalog: z
+        .object({
+          mode: z.enum(["services", "products"]).default("services"),
+          /** Заголовок раздела. Пусто: «Услуги» или «Товары» по режиму. */
+          title: z.string().default(""),
+        })
+        .optional(),
       blog: z.object({ perPage: z.number().int().min(1).default(9) }).optional(),
       reviews: z.object({}).optional(),
       gallery: z.object({}).optional(),

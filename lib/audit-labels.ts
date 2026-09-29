@@ -12,6 +12,8 @@ const CORE_LABELS: Record<string, string> = {
   "siteText.save": "Изменён текст сайта",
   "media.upload": "Загружено фото",
   "media.delete": "Удалено фото",
+  "media.alt": "Изменено описание фото",
+  "media.move": "Изменён порядок фото",
   "redirect.save": "Изменён редирект",
   "redirect.delete": "Удалён редирект",
 };

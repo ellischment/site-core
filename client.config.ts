@@ -30,6 +30,7 @@ export default defineClientConfig({
   modules: {
     requests: {},
     booking: {},
+    catalog: {},
   },
   nav: [],
   seo: {

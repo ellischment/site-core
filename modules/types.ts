@@ -29,6 +29,11 @@ export type ModuleDefinition = {
   /** API-адреса модуля (префиксы). Выключенный модуль отдаёт по ним 404. */
   apiPaths?: readonly string[];
   cron?: readonly CronTask[];
+  /**
+   * Сущности модуля, к которым загружаются фото (Media.entity), и какую
+   * сущность карты кэша сбрасывать после загрузки: { catalogItem: "catalogItem" }.
+   */
+  mediaEntities?: Record<string, string>;
   sitemap?: () => Promise<SitemapEntry[]>;
   /** Подписи действий для журнала: «request.delete» → «Удалена заявка». */
   auditLabels?: Record<string, string>;
